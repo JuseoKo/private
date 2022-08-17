@@ -1,8 +1,6 @@
-# private
-# private
-# private
-# private
-# private
-# private
-# private
-# private
+#텍스트변환기
+저장된 문자를 자동 변환해줌 ( 인디게임 번역 툴 )
+#영단어 외우기
+저장된 영단어를 무작위로 띄어줌 ( 토익공부용 )
+
+
