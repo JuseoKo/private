@@ -10,12 +10,12 @@ def add(Path, Name):
 
     for filename in filenames:
         #이미지 오픈 + 컨버트
-        img = Image.open(Path + '\\' + filename)
+        img = Image.open(Path +환'\\' + filename)
         img_convert = img.convert('RGB')
         #컨버트된 이미지를 리스트로 저장
         img_list.append(img_convert)
 
-    # 이미지 pdf화
+    # 이미지 pdf로 묶어서 변
     main_img = img_list[0]
     main_img.save(f'./{Name}.pdf', save_all=True, append_images=img_list)
 
