@@ -2,8 +2,6 @@ import tkinter as tk
 import tkinter.ttk
 from tkinter import *
 import re
-from tkinter import filedialog
-from unittest import result
 import googletrans
 import time
 

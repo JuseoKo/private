@@ -10,7 +10,7 @@ def add(Path, Name):
 
     for filename in filenames:
         #이미지 오픈 + 컨버트
-        img = Image.open(Path +환'\\' + filename)
+        img = Image.open(Path + '\\' + filename)
         img_convert = img.convert('RGB')
         #컨버트된 이미지를 리스트로 저장
         img_list.append(img_convert)
