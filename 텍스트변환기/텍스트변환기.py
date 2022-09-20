@@ -2,13 +2,13 @@ import tkinter as tk
 import tkinter.ttk
 from tkinter import *
 import re
-import googletrans
+#import googletrans
 import time
 
 #초기세팅
 if True:
     #구글번역기
-    translator = googletrans.Translator()
+    #translator = googletrans.Translator()
     #사용 데이터
     s_key_data = []
     s_value_data = []
@@ -23,7 +23,7 @@ if True:
 #데이터 로드
 def data_load():
     #읽기
-    data_open = open("./Datas.txt", 'r', encoding="UTF-8")
+    data_open = open("test.txt", 'r', encoding="UTF-8")
     data_open = data_open.read()
     #키 데이터 로드
     key_list = re.findall('(.+?) @ ', str(data_open))
@@ -106,7 +106,7 @@ def f2_input_data():
                 check_l = 1  
 
             else:    
-                data_open = open("./Datas.txt", 'a', encoding="UTF-8")
+                data_open = open("test.txt", 'a', encoding="UTF-8")
                 datas = f'\n{add_text_data_l[i].lstrip()} @ {add_text_data1_l[i].lstrip()}@'
                 data_open.write(datas)    
                 trans_data[add_text_data_l[i].lstrip()] = add_text_data1_l[i].lstrip()
@@ -265,18 +265,17 @@ def google_tr_data():
         tr_data_lists = re.findall('<<(.+?)>>', str(o))
 
         if len(tr_data_lists) == 0:
-            tr_data_texts = translator.translate(str(o), dest='ko')
-            tr_data_text_last = tr_data_texts.text
 
+            pass
         else:
             for c in range(0, len(tr_data_lists)):
                 tr_data_text = re.sub('<<(.+?)>>', tr_data_set[c], str(o))
             
-            tr_data_texts = translator.translate(tr_data_text, dest='ko')
+        #    tr_data_texts = translator.translate(tr_data_text, dest='ko')
             
             for b in range(0, len(tr_data_lists)):
                 try:
-                    tr_data_text_last = re.sub(tr_data_set[b], f'<<{tr_data_lists[b]}>>', str(tr_data_texts.text))
+                      pass
                 except IndexError:
                     continue
             tr_data_lists = []    
