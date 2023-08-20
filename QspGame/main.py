@@ -1,7 +1,14 @@
 import re
 import json
 from googletrans import Translator
+import time
 
+def spacial_text_preprocessing(text_list: list):
+    # 러시아 문자 제거
+    text_list = [text for text in text_list if not re.search('[а-яА-ЯёЁ]', text)]
+    # 일정수 미만 문자 제거
+    text_list = [text for text in text_list if len(text) > 10]
+    return text_list
 
 def text_word_parser(all_text: str):
     parser_text = re.sub('<img(.*?)\n', '\n', all_text)
@@ -19,15 +26,20 @@ def text_word_parser(all_text: str):
     parser_text = re.sub('if(.*?):', '', parser_text)
     parser_text = re.sub('elseif(.*?):', '', parser_text)
     parser_text = re.sub('\$(.*?)=', '', parser_text)
-    parser_text = parser_text.replace('</font>', '').replace('</b>', '').replace('<b>', '').replace('<center>',
-                                                                                                    '').replace(
-        '</center>', '').replace('\t', '')
-    # 문장 추출 코드
-    text_list = re.findall('\"(.*?)\"\n', parser_text)
-    # text_list = re.findall('=\'(.*?)\'\n', parser_text)
+    # 특정 문자 제거
+    parser_text = parser_text.replace('</font>', '').replace('</b>', '').replace('<b>', '').replace('<center>', '').replace('</center>', '').replace('\t', '')
+    # 0 . 문장 추출 코드
+    # ' ' 사이에 \n가 존재할 경우
+    text_list = re.findall('\"(.*?)\"\n', parser_text, re.DOTALL)
     # ================================================
-    text_list = [s.replace('\\', '') for s in text_list]
+    # 1. 리스트 상태에서 제거해야하는 문자열 제거
+    text_list = [s for text in text_list for s in text.split('\n')]
+    # text_list = [text.replace('\\', '') for text in text_list]
     text_list = list(set(text_list))
+    text_list = spacial_text_preprocessing(text_list=text_list)
+    # 2. 글자수로 정렬
+    text_list = sorted(text_list, key=len, reverse=True)
+
 
     text_dict = {}
     for text in text_list:
@@ -45,7 +57,7 @@ def open_game_text(path: str):
 
 
 def google_translator(text: str):
-    print(text)
+    print(f'번역 전 : {text}')
     # 변수 체크 및 저장
     param_check = re.findall('(?P<placeholder>(?:<+|<<)(.*?)(?:>+|>>))', text)
     param_dict = {}
@@ -62,11 +74,14 @@ def google_translator(text: str):
     # 변수 복구
     for k, v in param_dict.items():
         translated = translated.replace(v, k)
+        translated = re.sub(v, k, translated, flags=re.IGNORECASE)
+    print(f'번역 후 : {translated}')
+    time.sleep(0.5)
+    return translated
 
 
 if __name__ == '__main__':
-    test = '"-kr- Mmm... <<$tmpName>>. I like it so much when you caress my feet. You should definitely do this more often, <<$altName>>. It makes me feel more confident. Enjoy It, <<$altGgName>>. Thanks to you, I fell in love with this fetish and I like to do it myself."'
     # 번역 객체 생성
     translator = Translator()
-    google_translator(text=test)
-    # open_game_text(path='./text.txt')
+    # google_translator(text=test)
+    open_game_text(path='./text.txt')
