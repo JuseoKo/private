@@ -40,14 +40,18 @@ def text_word_parser(all_text: str):
     # 2. 글자수로 정렬
     text_list = sorted(text_list, key=len, reverse=True)
 
-
+    # 번역
     text_dict = {}
     for text in text_list:
-        text_dict[text] = google_translator(text)
-
-    with open('./Dict/game_dict.txt', 'w', encoding='utf-16le') as f:
+        try:
+            text_dict[text] = trans_from(text)
+        except:
+            time.sleep(10)
+            text_dict[text] = trans_from(text)
+    #저장
+    with open('./Dict/game_dict.txt', 'w') as f:
         f.write(str(json.dumps(text_dict, indent=4)))
-    print(str(json.dumps(text_dict, indent=4)))
+
     return text_list
 
 
@@ -56,7 +60,24 @@ def open_game_text(path: str):
         text_list = text_word_parser(all_text=f.read())
 
 
+def naver_translator(text: str):
+    import requests
+    client_id = "JXA1VR9b2RPkOqQJSw5A" # <-- client_id 기입
+    client_secret = "QJflmuVEc3" # <-- client_secret 기입
+    payload = {'text' : text,
+            'source' : 'en',
+            'target': 'ko'}
+    url = "https://openapi.naver.com/v1/papago/n2mt"
+    header = {"X-Naver-Client-Id":client_id,
+              "X-Naver-Client-Secret":client_secret}
+    response = requests.post(url, headers=header, data=payload).json()['message']['result']['translatedText']
+    return response
+
 def google_translator(text: str):
+    translated = str(translator.translate(text, src='en', dest='ko').text)
+    return translated
+
+def trans_from(text: str):
     print(f'번역 전 : {text}')
     # 변수 체크 및 저장
     param_check = re.findall('(?P<placeholder>(?:<+|<<)(.*?)(?:>+|>>))', text)
@@ -69,7 +90,7 @@ def google_translator(text: str):
     for k, v in param_dict.items():
         text = text.replace(k, v)
     # 번역
-    translated = str(translator.translate(text, src='en', dest='ko').text)
+    translated = google_translator(text=text)
 
     # 변수 복구
     for k, v in param_dict.items():
